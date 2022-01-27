@@ -18,7 +18,7 @@ const commnetReducer = (commnetState = Comments, action) => {
                   comment.id = commnetState.length;
                   comment.date = new Date().toDateString();
 
-                  console.log(comment);
+                  //console.log(comment);
                   return commnetState.concat(comment)
 
             default:
