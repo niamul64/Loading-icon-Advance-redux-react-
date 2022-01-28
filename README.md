@@ -35,4 +35,10 @@ npm install redux-thunk --save
 ```
 <br><br>
 
-### Now, inmpor to store.js, add to store
+### Now, import thunk to store.js, add to store
+<img src="picS/thunk.JPG" width="50%"><br><br>
+
+### some acction types
+<img src="picS/ACTION TYPES.JPG" width="50%"><br><br>
+
+# For furthure explanation see the video with this reposetory.
