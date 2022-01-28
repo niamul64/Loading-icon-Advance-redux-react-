@@ -5,8 +5,9 @@ import MenuItem from './MenuItem';
 import DishDetails from './DishDetails';
 import Comments from '../../data/Comments';
 import { Modal, CardGroup, ModalBody, Card, CardColumns, ModalFooter, Button } from 'reactstrap';
-import { addCommentActionOBJ } from '../../redux/actionCreators';
+import { addCommentActionOBJ, fetchDishes } from '../../redux/actionCreators';
 import { connect } from 'react-redux'; // need to import 
+import Loading from './Loading';
 
 const mapStateToProps = state => {
       // console.log("Home mapStateToProps", state)
@@ -18,9 +19,8 @@ const mapStateToProps = state => {
 }
 const mapDispatchToProps = dispatch => {
       return {
-            addComment: (dishId, rating, author, comment) => dispatch(
-                  addCommentActionOBJ(dishId, rating, author, comment)
-            )
+            addComment: (dishId, rating, author, comment) => dispatch(addCommentActionOBJ(dishId, rating, author, comment)),
+            fetchDishes: () => dispatch(fetchDishes())
             // ,
             // More funtions can be retten here
       }
@@ -44,59 +44,79 @@ class Menu extends Component {
                   modelOpen: !this.state.modelOpen
             })
       }
+      componentDidMount() {
+            this.props.fetchDishes();
+
+      }
+
 
 
 
       render() {
             document.title = "Menu";
+            console.log(this.props.dishes.isLoading);
 
-
-            let seletedADish = null;
-            // if user clicks on a dish,
-            // then this variable is not null
-
-            if (this.state.selctedDish) {
-                  const comments = this.props.comments.filter((comment) => {
-                        return comment.dishId === this.state.selctedDish.id;
-                  })
-                  seletedADish = <DishDetails
-                        dish={this.state.selctedDish}
-                        comments={comments}
-                        addComment={this.props.addComment} />
-            }
-
-
-            const dishes = this.props.dishes.map((item) => {
+            if (this.props.dishes.isLoading) {
                   return (
-                        <MenuItem dish={item} key={item.id}
-                              function={() => this.dishSelect(item)}
-                        /> // evry dish has an id.
+                        <Loading />
                   );
             }
-            );
-            return (
-                  <div className='container'>
-                        <div className='row' >
-                              <CardGroup>
-                                    {dishes}
-                              </CardGroup>
-                              <Modal isOpen={this.state.modelOpen}>
-                                    <ModalBody>
-                                          {seletedADish}
-                                          {/* sending the one obj that selected */}
+            else {
+                  let seletedADish = null;
+                  // if user clicks on a dish,
+                  // then this variable is not null
 
-                                    </ModalBody>
-                                    <ModalFooter>
-                                          <Button color="secondary" onClick={this.toggleModel}>
-                                                Close
-                                          </Button>
-                                    </ModalFooter>
+                  if (this.state.selctedDish) {
+                        const comments = this.props.comments.filter((comment) => {
+                              return comment.dishId === this.state.selctedDish.id;
+                        })
+                        seletedADish = <DishDetails
+                              dish={this.state.selctedDish}
+                              comments={comments}
+                              addComment={this.props.addComment} />
+                  }
+                  let dishes = []
 
-                              </Modal>
+                  try {
+                        dishes = this.props.dishes.dishes.dishes.map((item) => {
 
+                              return (
+                                    <MenuItem dish={item} key={item.id}
+                                          function={() => this.dishSelect(item)}
+                                    /> // evry dish has an id.
+                              );
+                        }
+                        );
+                  } catch (e) {
+                        console.log("Till Now No obj");
+                  }
+
+                  return (
+                        <div className='container'>
+                              <div className='row' >
+                                    <CardGroup>
+                                          {dishes}
+                                    </CardGroup>
+                                    <Modal isOpen={this.state.modelOpen}>
+                                          <ModalBody>
+                                                {seletedADish}
+                                                {/* sending the one obj that selected */}
+
+                                          </ModalBody>
+                                          <ModalFooter>
+                                                <Button color="secondary" onClick={this.toggleModel}>
+                                                      Close
+                                                </Button>
+                                          </ModalFooter>
+
+                                    </Modal>
+
+                              </div>
                         </div>
-                  </div>
-            );
+                  );
+            }
+
+
       }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Menu);
