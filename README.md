@@ -41,4 +41,4 @@ npm install redux-thunk --save
 ### some acction types
 <img src="picS/ACTION TYPES.JPG" width="50%"><br><br>
 
-# For furthure explanation see the video with this reposetory.
+# For furthure explanation, see the video with this reposetory.
